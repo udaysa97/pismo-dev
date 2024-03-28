@@ -1,0 +1,335 @@
+package appconfig
+
+import (
+	"os"
+	"strconv"
+)
+
+var (
+	DATABASE_URL string
+
+	HOST string
+	PORT string
+
+	REDIS_URL       string
+	MAX_REDIRECTS   string
+	REDIS_POOL_SIZE string
+	LOG_LEVEL       string
+
+	KAFKA_HOST                string
+	KAFKA_GROUP_ID            string
+	TOKEN_TRANSFER_TOPIC      string
+	AMPLITUDE_EVENT_TOPIC     string
+	FM_CONSUMER_TOPIC         string
+	FM_CONSUMER_POLL_INTERVAL int
+
+	POSTGRES_USER     string
+	POSTGRES_PASSWORD string
+	POSTGRES_HOST     string
+	POSTGRES_PORT     string
+	POSTGRES_DB       string
+
+	POSTGRES_MAX_CONNECTIONS          string
+	POSTGRES_MAX_IDLE_CONNECTIONS     string
+	POSTGRES_MAX_IDLE_CONNECTION_TIME string
+
+	AWS_SECRET_ACCESS_KEY         string
+	AWS_ACCESS_KEY_ID             string
+	AWS_REGION                    string
+	SQS_ENV                       string
+	SQS_STANDARD_QUEUE_URL        string
+	SQS_DELAY_SECONDS             int
+	SQS_MESSAGGE_RETENTION_PERIOD string
+	SQS_VISIBILITY_TIMEOUT        int
+	SQS_WAIT_TIME                 int
+	MAX_NUMBER_SQS_MESSAGE        int
+
+	SQS_STANDARD_QUEUE_URL_NFT_PORT_POLYGON        string
+	SQS_DELAY_SECONDS_NFT_PORT_POLYGON             int
+	SQS_MESSAGGE_RETENTION_PERIOD_NFT_PORT_POLYGON string
+	SQS_VISIBILITY_TIMEOUT_NFT_PORT_POLYGON        int
+	SQS_WAIT_TIME_NFT_PORT_POLYGON                 int
+	MAX_NUMBER_SQS_MESSAGE_NFT_PORT_POLYGON        int
+
+	SQS_STANDARD_QUEUE_URL_CROSSMINT_POLYGON        string
+	SQS_DELAY_SECONDS_CROSSMINT_POLYGON             int
+	SQS_MESSAGGE_RETENTION_PERIOD_CROSSMINT_POLYGON string
+	SQS_VISIBILITY_TIMEOUT_CROSSMINT_POLYGON        int
+	SQS_WAIT_TIME_CROSSMINT_POLYGON                 int
+	MAX_NUMBER_SQS_MESSAGE_CROSSMINT_POLYGON        int
+
+	SQS_QUEUE_NAME                   string
+	SQS_QUEUE_NAME_NFT_PORT_POLYGON  string
+	SQS_QUEUE_NAME_CROSSMINT_POLYGON string
+
+	DD_ENV        string
+	DD_SERVICE    string
+	DD_AGENT_HOST string
+
+	PORTFOLIO_SERVICE_URL string
+	FM_SERVICE_URL        string
+	DAPP_SERVICE_URL      string
+
+	DQL_SERVICE_URL     string
+	OKTO_VPC_SECRET     string
+	CEFI_VPC_SECRET     string
+	SIGNING_VPC_SECRET  string
+	FM_EXECUTE_DEADLINE int
+	err                 error
+
+	SLIPPAGE                               string
+	DEFI_COOL_OFF_PERIOD                   int
+	DEFI_FORCE_LOGOUT_PERIOD               int
+	ENV                                    string
+	IS_PRODUCTION                          bool //VVIMP to set
+	AUTH_SERVICE_BASE_URL                  string
+	EMAIL_SERVICE_BASE_URL                 string
+	SIGNING_SERVICE_BASE_URL               string
+	COMMUNICATION_VPC_AUTHORIZATION_SECRET string
+	NETWORK_CACHE_TTL                      int
+
+	CROSSMINT_CACHE_LOCK_KEY_MINT string
+	CROSSMINT_CACHE_LOCK_TTL_MINT int
+
+	CROSSMINT_CACHE_LOCK_KEY_STATUS string
+	CROSSMINT_CACHE_LOCK_TTL_STATUS int
+
+	CROSSMINT_BASE_URL    string
+	CROSSMINT_CLIENT_KEY  string
+	CROSSMINT_PROJECT_KEY string
+
+	NFTPORT_CACHE_LOCK_KEY_MINT string
+	NFTPORT_CACHE_LOCK_TTL_MINT int
+
+	NFTPORT_CACHE_LOCK_KEY_STATUS string
+	NFTPORT_CACHE_LOCK_TTL_STATUS int
+
+	NFTPORT_BASE_URL string
+	NFTPORT_API_KEY  string
+)
+
+func SetEnvVariables() {
+	DATABASE_URL = os.Getenv("DATABASE_URL")
+	REDIS_URL = os.Getenv("REDIS_URL")
+
+	HOST = os.Getenv("HOST")
+	PORT = os.Getenv("PORT")
+
+	MAX_REDIRECTS = os.Getenv("MAX_REDIRECTS")
+	REDIS_POOL_SIZE = os.Getenv("REDIS_POOL_SIZE")
+	LOG_LEVEL = os.Getenv("LOG_LEVEL")
+
+	POSTGRES_DB = os.Getenv("POSTGRES_DB")
+	POSTGRES_HOST = os.Getenv("POSTGRES_HOST")
+	POSTGRES_PASSWORD = os.Getenv("POSTGRES_PASSWORD")
+	POSTGRES_PORT = os.Getenv("POSTGRES_PORT")
+	POSTGRES_USER = os.Getenv("POSTGRES_USER")
+
+	POSTGRES_MAX_CONNECTIONS = os.Getenv("POSTGRES_MAX_CONNECTIONS")
+	POSTGRES_MAX_IDLE_CONNECTIONS = os.Getenv("POSTGRES_MAX_IDLE_CONNECTIONS")
+	POSTGRES_MAX_IDLE_CONNECTION_TIME = os.Getenv("POSTGRES_MAX_IDLE_CONNECTION_TIME")
+
+	AWS_SECRET_ACCESS_KEY = os.Getenv("AWS_SECRET_ACCESS_KEY")
+	AWS_ACCESS_KEY_ID = os.Getenv("AWS_ACCESS_KEY_ID")
+	AWS_REGION = os.Getenv("AWS_REGION")
+	SQS_ENV = os.Getenv("SQS_ENV")
+	SQS_STANDARD_QUEUE_URL = os.Getenv("SQS_STANDARD_QUEUE_URL")
+	SQS_QUEUE_NAME = os.Getenv("SQS_QUEUE_NAME")
+	SQS_MESSAGGE_RETENTION_PERIOD = os.Getenv("SQS_MESSAGGE_RETENTION_PERIOD")
+	SQS_VISIBILITY_TIMEOUT, err = strconv.Atoi(os.Getenv("SQS_VISIBILITY_TIMEOUT"))
+	if err != nil {
+		panic("SQS Visibility timeout not set")
+	}
+	SQS_WAIT_TIME, err = strconv.Atoi(os.Getenv("SQS_WAIT_TIME"))
+	if err != nil {
+		panic("SQS SQS_WAIT_TIME not set")
+	}
+
+	SQS_DELAY_SECONDS, err = strconv.Atoi(os.Getenv("SQS_DELAY_SECONDS"))
+	if err != nil {
+		SQS_DELAY_SECONDS = 900
+	}
+	MAX_NUMBER_SQS_MESSAGE, err = strconv.Atoi(os.Getenv("MAX_NUMBER_SQS_MESSAGE"))
+	if err != nil {
+		MAX_NUMBER_SQS_MESSAGE = 1
+	}
+	SQS_STANDARD_QUEUE_URL_NFT_PORT_POLYGON = os.Getenv("SQS_STANDARD_QUEUE_URL_NFT_PORT_POLYGON")
+	SQS_QUEUE_NAME_NFT_PORT_POLYGON = os.Getenv("SQS_QUEUE_NAME_NFT_PORT_POLYGON")
+
+	SQS_VISIBILITY_TIMEOUT_NFT_PORT_POLYGON, err = strconv.Atoi(os.Getenv("SQS_VISIBILITY_TIMEOUT_NFT_PORT_POLYGON"))
+	if err != nil {
+		panic("SQS Visibility timeout not set for NFT PORT")
+	}
+	SQS_WAIT_TIME_NFT_PORT_POLYGON, err = strconv.Atoi(os.Getenv("SQS_WAIT_TIME_NFT_PORT_POLYGON"))
+	if err != nil {
+		panic("SQS SQS_WAIT_TIME_NFT_PORT_POLYGON not set")
+	}
+
+	SQS_DELAY_SECONDS_NFT_PORT_POLYGON, err = strconv.Atoi(os.Getenv("SQS_DELAY_SECONDS_NFT_PORT_POLYGON"))
+	if err != nil {
+		panic("SQS SQS_DELAY_SECONDS_NFT_PORT_POLYGON not set")
+	}
+	MAX_NUMBER_SQS_MESSAGE_NFT_PORT_POLYGON, err = strconv.Atoi(os.Getenv("MAX_NUMBER_SQS_MESSAGE_NFT_PORT_POLYGON"))
+	if err != nil {
+		MAX_NUMBER_SQS_MESSAGE = 1
+	}
+
+	SQS_STANDARD_QUEUE_URL_CROSSMINT_POLYGON = os.Getenv("SQS_STANDARD_QUEUE_URL_CROSSMINT_POLYGON")
+	SQS_QUEUE_NAME_CROSSMINT_POLYGON = os.Getenv("SQS_QUEUE_NAME_CROSSMINT_POLYGON")
+
+	SQS_VISIBILITY_TIMEOUT_CROSSMINT_POLYGON, err = strconv.Atoi(os.Getenv("SQS_VISIBILITY_TIMEOUT_CROSSMINT_POLYGON"))
+	if err != nil {
+		panic("SQS Visibility timeout not set for NFT PORT")
+	}
+	SQS_WAIT_TIME_CROSSMINT_POLYGON, err = strconv.Atoi(os.Getenv("SQS_WAIT_TIME_CROSSMINT_POLYGON"))
+	if err != nil {
+		panic("SQS SQS_WAIT_TIME_CROSSMINT_POLYGON not set")
+	}
+
+	SQS_DELAY_SECONDS_CROSSMINT_POLYGON, err = strconv.Atoi(os.Getenv("SQS_DELAY_SECONDS_CROSSMINT_POLYGON"))
+	if err != nil {
+		panic("SQS SQS_DELAY_SECONDS_CROSSMINT_POLYGON not set")
+	}
+	MAX_NUMBER_SQS_MESSAGE_CROSSMINT_POLYGON, err = strconv.Atoi(os.Getenv("MAX_NUMBER_SQS_MESSAGE_CROSSMINT_POLYGON"))
+	if err != nil {
+		MAX_NUMBER_SQS_MESSAGE = 1
+	}
+
+	DD_ENV = os.Getenv("DD_ENV")
+	DD_SERVICE = os.Getenv("DD_SERVICE")
+	DD_AGENT_HOST = os.Getenv("DD_AGENT_HOST")
+
+	FM_SERVICE_URL = os.Getenv("FM_SERVICE_URL")
+	PORTFOLIO_SERVICE_URL = os.Getenv("PORTFOLIO_SERVICE_URL")
+	DQL_SERVICE_URL = os.Getenv("DQL_SERVICE_URL")
+	OKTO_VPC_SECRET = os.Getenv("OKTO_VPC_SECRET")
+	FM_EXECUTE_DEADLINE, err = strconv.Atoi(os.Getenv("FM_EXECUTE_DEADLINE"))
+	if err != nil {
+		FM_EXECUTE_DEADLINE = 10
+	}
+	TOKEN_TRANSFER_TOPIC = os.Getenv("TOKEN_TRANSFER_TOPIC")
+	AMPLITUDE_EVENT_TOPIC = os.Getenv("AMPLITUDE_EVENT_TOPIC")
+	KAFKA_HOST = os.Getenv("KAFKA_HOST")
+	SLIPPAGE = os.Getenv("SLIPPAGE")
+	if len(SLIPPAGE) == 0 {
+		SLIPPAGE = "0.5" //TODO: REMOVE
+	}
+
+	if DEFI_COOL_OFF_PERIOD, err = strconv.Atoi(os.Getenv("DEFI_COOL_OFF_PERIOD")); err != nil || DEFI_COOL_OFF_PERIOD == 0 {
+		DEFI_COOL_OFF_PERIOD = 30
+	}
+	if DEFI_FORCE_LOGOUT_PERIOD, err = strconv.Atoi(os.Getenv("DEFI_FORCE_LOGOUT_PERIOD")); err != nil || DEFI_COOL_OFF_PERIOD == 0 {
+		DEFI_FORCE_LOGOUT_PERIOD = 60
+	}
+	IS_PRODUCTION = true
+	ENV = os.Getenv("ENV")
+	if len(ENV) == 0 {
+		ENV = "PRODUCTION"
+	}
+	if ENV != "PRODUCTION" {
+		IS_PRODUCTION = false
+	}
+	AUTH_SERVICE_BASE_URL = os.Getenv("AUTH_SERVICE_BASE_URL")
+	CEFI_VPC_SECRET = os.Getenv("CEFI_VPC_SECRET")
+	EMAIL_SERVICE_BASE_URL = os.Getenv("COMMUNICATION_SERVICE_BASE_URL")
+	COMMUNICATION_VPC_AUTHORIZATION_SECRET = os.Getenv("COMMUNICATION_VPC_AUTHORIZATION_SECRET")
+	KAFKA_GROUP_ID = os.Getenv("KAFKA_GROUP_ID")
+	if len(KAFKA_GROUP_ID) < 1 {
+		panic("No Kafka group Id provided")
+	}
+	FM_CONSUMER_POLL_INTERVAL, err = strconv.Atoi(os.Getenv("FM_CONSUMER_POLL_INTERVAL"))
+	if err != nil {
+		panic("No Polling interval for FM consumer provided")
+	}
+	FM_CONSUMER_TOPIC = os.Getenv("FM_CONSUMER_TOPIC")
+	if len(FM_CONSUMER_TOPIC) < 1 {
+		panic("No FM consumer topic provided")
+	}
+
+	SIGNING_VPC_SECRET = os.Getenv("SIGNING_VPC_SECRET")
+	if len(SIGNING_VPC_SECRET) < 1 {
+		panic("Signing VPC Secret not provided")
+
+	}
+	SIGNING_SERVICE_BASE_URL = os.Getenv("SIGNING_SERVICE_BASE_URL")
+	if len(SIGNING_SERVICE_BASE_URL) < 1 {
+		panic("Signing Base URL not provided")
+
+	}
+
+	NFTPORT_CACHE_LOCK_KEY_MINT = os.Getenv("NFTPORT_CACHE_LOCK_KEY_MINT")
+	if len(NFTPORT_CACHE_LOCK_KEY_MINT) < 1 {
+		panic("NFTPORT_CACHE_LOCK_KEY_MINT not provided")
+
+	}
+	NFTPORT_CACHE_LOCK_TTL_MINT, err = strconv.Atoi(os.Getenv("NFTPORT_CACHE_LOCK_TTL_MINT"))
+	if err != nil {
+		panic("No NFTPORT_CACHE_LOCK_TTL_MINT provided")
+	}
+	NFTPORT_CACHE_LOCK_KEY_STATUS = os.Getenv("NFTPORT_CACHE_LOCK_KEY_STATUS")
+	if len(NFTPORT_CACHE_LOCK_KEY_STATUS) < 1 {
+		panic("NFTPORT_CACHE_LOCK_KEY_STATUS not provided")
+
+	}
+	NFTPORT_CACHE_LOCK_TTL_STATUS, err = strconv.Atoi(os.Getenv("NFTPORT_CACHE_LOCK_TTL_STATUS"))
+	if err != nil {
+		panic("No NFTPORT_CACHE_LOCK_TTL_STATUS provided")
+	}
+
+	NFTPORT_BASE_URL = os.Getenv("NFTPORT_BASE_URL")
+	if len(NFTPORT_BASE_URL) < 1 {
+		panic("NFTPORT_BASE_URL not provided")
+
+	}
+	DAPP_SERVICE_URL = os.Getenv("DAPP_SERVICE_URL")
+	if len(DAPP_SERVICE_URL) < 1 {
+		panic("DAPP_SERVICE_URL not provided")
+
+	}
+	NFTPORT_API_KEY = os.Getenv("NFTPORT_API_KEY")
+	if len(NFTPORT_API_KEY) < 1 {
+		panic("NFTPORT_API_KEY not provided")
+
+	}
+
+	CROSSMINT_CACHE_LOCK_KEY_MINT = os.Getenv("CROSSMINT_CACHE_LOCK_KEY_MINT")
+	if len(CROSSMINT_CACHE_LOCK_KEY_MINT) < 1 {
+		panic("CROSSMINT_CACHE_LOCK_KEY_MINT not provided")
+
+	}
+	CROSSMINT_CACHE_LOCK_TTL_MINT, err = strconv.Atoi(os.Getenv("CROSSMINT_CACHE_LOCK_TTL_MINT"))
+	if err != nil {
+		panic("No CROSSMINT_CACHE_LOCK_TTL_MINT provided")
+	}
+	CROSSMINT_CACHE_LOCK_KEY_STATUS = os.Getenv("CROSSMINT_CACHE_LOCK_KEY_STATUS")
+	if len(CROSSMINT_CACHE_LOCK_KEY_STATUS) < 1 {
+		panic("CROSSMINT_CACHE_LOCK_KEY_STATUS not provided")
+
+	}
+	CROSSMINT_CACHE_LOCK_TTL_STATUS, err = strconv.Atoi(os.Getenv("CROSSMINT_CACHE_LOCK_TTL_STATUS"))
+	if err != nil {
+		panic("No CROSSMINT_CACHE_LOCK_TTL_STATUS provided")
+	}
+
+	CROSSMINT_BASE_URL = os.Getenv("CROSSMINT_BASE_URL")
+	if len(CROSSMINT_BASE_URL) < 1 {
+		panic("CROSSMINT_BASE_URL not provided")
+
+	}
+	CROSSMINT_CLIENT_KEY = os.Getenv("CROSSMINT_CLIENT_KEY")
+	if len(CROSSMINT_CLIENT_KEY) < 1 {
+		panic("CROSSMINT_CLIENT_KEY not provided")
+
+	}
+	CROSSMINT_PROJECT_KEY = os.Getenv("CROSSMINT_PROJECT_KEY")
+	if len(CROSSMINT_PROJECT_KEY) < 1 {
+		panic("CROSSMINT_PROJECT_KEY not provided")
+
+	}
+
+	NETWORK_CACHE_TTL, err = strconv.Atoi(os.Getenv("NETWORK_CACHE_TTL"))
+	if err != nil {
+		panic("No NETWORK_CACHE_TTL provided")
+	}
+
+}

@@ -1,0 +1,5 @@
+BEGIN;
+ALTER TABLE order_metadata 
+    ALTER COLUMN "count" TYPE VARCHAR,
+    ALTER COLUMN "count" SET NOT NULL;
+COMMIT;

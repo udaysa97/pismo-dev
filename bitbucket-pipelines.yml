@@ -1,0 +1,65 @@
+image:
+  name: golang:1.18-alpine
+options:
+  docker: true
+  size: 2x
+definitions:
+  caches:
+    sonar-cache: .sonar
+  steps:
+    - step: &test
+        name: Test
+        script:
+          - apk add build-base
+          - go mod download
+          - go test -tags musl -v ./...
+    - step: &test-coverage
+        name: Test Coverage
+        services:
+          - docker
+        script:
+          - apk add build-base
+          - go mod download
+          #- go test -tags musl ./... -coverprofile=coverage.out -coverpkg=./... ./
+        artifacts:
+          - coverage.out
+    - step: &quality
+        name: Code Quality
+        caches:
+          - sonar-cache
+        image: sonarsource/sonar-scanner-cli:4.3
+        script:
+          - export SONAR_LOGIN=$SONAR_API_TOKEN
+          - export SONAR_PROJECT_BASE_DIR=.
+          - /opt/sonar-scanner/bin/sonar-scanner -Dsonar.login=$SONAR_API_TOKEN
+    - step: &push-to-github
+        name: "Docker Build & Push"
+        image: atlassian/default-image:3
+        script:
+          - git push https://$GH_MIGRATE_USERNAME:$GH_MIGRATE_PASSWORD@github.com/coindcx-okto/$BITBUCKET_REPO_SLUG.git $BITBUCKET_BRANCH:$BITBUCKET_BRANCH
+          - echo -e "We're in process of migrating to Github.\nMeanwhile, you can check the pipelines/builds status at https://github.com/coindcx-okto/$BITBUCKET_REPO_SLUG/actions"
+  services:
+    postgres:
+      image: cdcx/postgres-multidb
+      environment:
+        POSTGRES_MULTIPLE_DATABASES: "node_template_test:coindcx_audit_test"
+        POSTGRES_PASSWORD: "coindcx"
+    redis:
+      image: redis
+    dynamodb-local:
+      image: amazon/dynamodb-local
+pipelines:
+  default:
+    - step: *test-coverage
+  branches:
+    master:
+      - step: *test-coverage
+      - step: *quality
+    release/staging:
+      - step: *push-to-github
+    release/preprod:
+      - step: *push-to-github
+    release/master:
+      - step: *push-to-github
+    IDOPS-164:
+      - step: *push-to-github
