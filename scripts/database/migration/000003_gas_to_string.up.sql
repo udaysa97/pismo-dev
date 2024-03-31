@@ -1,7 +1,0 @@
-BEGIN;
-ALTER TABLE transaction_data
-    ALTER COLUMN "gas_used" TYPE VARCHAR,
-    ALTER COLUMN "gas_used" SET NOT NULL,
-    ALTER COLUMN "gas_price" TYPE VARCHAR,
-    ALTER COLUMN "gas_price" SET NOT NULL;
-COMMIT;

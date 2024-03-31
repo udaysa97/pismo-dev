@@ -6,9 +6,9 @@ import (
 	"os"
 	"pismo-dev/api/middleware/cors"
 	"pismo-dev/api/route"
-	"pismo-dev/api/types"
 	"pismo-dev/constants"
 	"pismo-dev/internal/appconfig"
+	"pismo-dev/internal/repository"
 	"pismo-dev/internal/service"
 	"pismo-dev/pkg/logger"
 
@@ -16,7 +16,7 @@ import (
 	gintrace "gopkg.in/DataDog/dd-trace-go.v1/contrib/gin-gonic/gin"
 )
 
-func InitServer(services *service.Service) {
+func InitServer(services *service.Service, repos *repository.Repositories) {
 	if os.Getenv("ENV") == "production" {
 		gin.SetMode(gin.ReleaseMode)
 	}
@@ -28,20 +28,20 @@ func InitServer(services *service.Service) {
 	router.Use(gintrace.Middleware("pismo-dev"))
 
 	router.NoRoute(func(c *gin.Context) {
-		c.JSON(http.StatusNotFound, gin.H{"status": types.StatusError, "error": &types.ErrorResponse{
-			Code:      constants.ERROR_TYPES[constants.DATA_NOT_FOUND_ERROR].HttpStatus,
-			ErrorCode: constants.ERROR_TYPES[constants.DATA_NOT_FOUND_ERROR].ErrorCode,
-			Message:   "link not found",
-			TraceID:   c.GetString(constants.TRACE_ID_KEY),
+		c.JSON(http.StatusMethodNotAllowed, gin.H{"status": "error", "error": map[string]any{
+			"Code":      404,
+			"ErrorCode": "nometh",
+			"Message":   "Method not found",
+			"TraceID":   c.GetString(constants.TRACE_ID_KEY),
 		}})
 	})
 
 	router.NoMethod(func(c *gin.Context) {
-		c.JSON(http.StatusMethodNotAllowed, gin.H{"status": types.StatusError, "error": &types.ErrorResponse{
-			Code:      constants.ERROR_TYPES[constants.METHOD_NOT_ALLOWED_ERROR].HttpStatus,
-			ErrorCode: constants.ERROR_TYPES[constants.METHOD_NOT_ALLOWED_ERROR].ErrorCode,
-			Message:   "Method not found",
-			TraceID:   c.GetString(constants.TRACE_ID_KEY),
+		c.JSON(http.StatusMethodNotAllowed, gin.H{"status": "error", "error": map[string]any{
+			"Code":      404,
+			"ErrorCode": "nometh",
+			"Message":   "Method not found",
+			"TraceID":   c.GetString(constants.TRACE_ID_KEY),
 		}})
 	})
 	port := appconfig.PORT
@@ -59,7 +59,7 @@ func InitServer(services *service.Service) {
 	addr := fmt.Sprintf("%s:%s", host, port)
 
 	logger.Info(fmt.Sprintf("Listening and serving HTTP on %s", addr))
-	route.Register(router, services)
+	route.Register(router, services, repos)
 
 	if err := router.Run(addr); err != nil {
 		panic(err)

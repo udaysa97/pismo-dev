@@ -88,7 +88,6 @@ func defaultLogEntry(argument ...interface{}) *logrus.Entry {
 					if key == "context" {
 						if ginVal, ok := value.(*gin.Context); ok {
 							fields[constants.TRACE_ID_KEY] = ginVal.GetString(constants.TRACE_ID_KEY)
-							fields[constants.INTERNAL_TRACE_ID_KEY] = ginVal.GetString(constants.TRACE_ID_KEY)
 						}
 					} else {
 						if byteval, ok := isByteSlice(value); ok {
@@ -138,7 +137,6 @@ func Error(message string, argument ...interface{}) {
 					if key == "context" {
 						if ginVal, ok := value.(*gin.Context); ok {
 							fields[constants.TRACE_ID_KEY] = ginVal.GetString(constants.TRACE_ID_KEY)
-							fields[constants.INTERNAL_TRACE_ID_KEY] = ginVal.GetString(constants.TRACE_ID_KEY)
 						}
 					} else {
 						if byteval, ok := isByteSlice(value); ok {

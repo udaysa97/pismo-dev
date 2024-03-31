@@ -1,40 +1,49 @@
-package transactionservice
+package transaction
 
 import (
-	"net/http"
-	"pismo-dev/api/logger"
+	"pismo-dev/api/common"
 	"pismo-dev/api/types"
-	"pismo-dev/internal/repository/utils"
 
+	"pismo-dev/internal/repository"
 	"pismo-dev/internal/service"
-	"pismo-dev/internal/util"
 
 	"github.com/gin-gonic/gin"
 )
 
-func GetTransactionDetails(services *service.Service) gin.HandlerFunc {
+func InsertTransaction(services *service.Service, repos *repository.Repositories) gin.HandlerFunc {
 
 	return func(ctx *gin.Context) {
-		var queryParams map[string][]string
-		queryParams = ctx.Request.URL.Query()
-		response := types.ResponseDTO[types.TransactionDetailsResponse]{}
-		responseBody := &types.TransactionDetailsResponse{}
+		request := types.TransactionRequest{}
 
-		pagination := utils.GeneratePaginationFromRequest(ctx)
-
-		if result, err := services.TransactionDataSvc.GetTransactionDetails(ctx, queryParams, pagination); err != nil {
-			if errInstance, isServiceError := util.GetServiceError(err); isServiceError {
-				logger.ServiceErrorResponse(ctx, errInstance)
-				return
-			}
-			logger.ErrorResponse(ctx, err.ErrorCode, err.Message)
-			logger.Error(ctx, "GetTransactionDetails | error :", err)
+		if err := common.ReadAndValidateRequestBody(ctx.Request, &request); err != nil {
+			ctx.AbortWithStatus(400)
 			return
-		} else {
-			responseBody.TransactionDetails = result
-			response.Result = responseBody
-			response.Status = types.StatusSuccess
-			ctx.JSON(http.StatusOK, response)
 		}
+		result := repos.TransactionRepo.InsertTransaction(request)
+		ctx.AbortWithStatusJSON(200, result)
+	}
+}
+
+func InsertAccount(services *service.Service, repos *repository.Repositories) gin.HandlerFunc {
+
+	return func(ctx *gin.Context) {
+		request := types.CreateAccountRequest{}
+
+		if err := common.ReadAndValidateRequestBody(ctx.Request, &request); err != nil {
+			ctx.AbortWithStatus(400)
+			return
+		}
+		result := repos.AccountRepo.InsertAccount(request)
+		ctx.AbortWithStatusJSON(200, result)
+	}
+}
+
+func GetAccount(services *service.Service, repos *repository.Repositories) gin.HandlerFunc {
+
+	return func(ctx *gin.Context) {
+		accountId := ctx.Param("accountId")
+
+		result := repos.AccountRepo.GetAccountData(accountId)
+		ctx.AbortWithStatusJSON(200, result)
 	}
 }

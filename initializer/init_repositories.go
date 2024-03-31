@@ -7,8 +7,8 @@ import (
 
 func InitRepositories(store *storage.Store) *repository.Repositories {
 	repositoryOptions := []repository.RepositoriesOption{
-		repository.WithOrderMetadataRepo(store),
 		repository.WithTransactionDataRepo(store),
+		repository.WithAccountRepo(store),
 	}
 	return repository.New(repositoryOptions...)
 }

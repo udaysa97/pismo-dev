@@ -1,15 +1,15 @@
 package repository
 
 import (
-	"pismo-dev/internal/repository/ordermetadata"
+	"pismo-dev/internal/repository/account"
 	trasactiondata "pismo-dev/internal/repository/transactiondata"
 	"pismo-dev/pkg/logger"
 	"pismo-dev/pkg/storage"
 )
 
 type Repositories struct {
-	OrderMetadataRepo   ordermetadata.OrderMetadataRepositoryInterface
-	TransactionDataRepo trasactiondata.TransactionDataRepositoryInterface
+	AccountRepo     account.AccountRepositoryInterface
+	TransactionRepo trasactiondata.TransactionDataRepositoryInterface
 }
 
 type RepositoriesOption func(*Repositories) error
@@ -30,16 +30,16 @@ func New(opts ...RepositoriesOption) *Repositories {
 	return repositories
 }
 
-func WithOrderMetadataRepo(store *storage.Store) RepositoriesOption {
+func WithAccountRepo(store *storage.Store) RepositoriesOption {
 	return func(repositories *Repositories) error {
-		repositories.OrderMetadataRepo = ordermetadata.NewOrderMetadataRepository(store.GormPsql)
+		repositories.AccountRepo = account.NewAccountRepository(store.GormPsql)
 		return nil
 	}
 }
 
 func WithTransactionDataRepo(store *storage.Store) RepositoriesOption {
 	return func(repositories *Repositories) error {
-		repositories.TransactionDataRepo = trasactiondata.NewTransactionDataRepository(store.GormPsql)
+		repositories.TransactionRepo = trasactiondata.NewTransactionRepository(store.GormPsql)
 		return nil
 	}
 }

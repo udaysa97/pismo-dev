@@ -1,34 +1,22 @@
 BEGIN;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-CREATE TABLE IF NOT EXISTS order_metadata (
-	"order_id" uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-	"user_id" uuid NOT NULL,
-	"status" varchar NOT NULL,
-	"network_id" uuid NOT NULL,
-	"entity_type" varchar NOT NULL DEFAULT 'NFT',
-	"entity_address" varchar NOT NULL,
-	"nft_id" varchar NOT NULL,
-	"count" int NOT NULL,
-	"order_type" varchar NOT NULL,
-	"slippage" varchar NOT NULL,
-	"execution_response" text NULL,
-	"created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	"updated_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE IF NOT EXISTS Accounts (
+  Account_ID INT PRIMARY KEY AUTO_INCREMENT,
+  Document_Number VARCHAR(255) UNIQUE NOT NULL
 );
 
-CREATE UNIQUE INDEX uidx_order_metadata ON order_metadata (order_id, user_id);
-
-CREATE TABLE IF NOT EXISTS transaction_data (
-	"order_id" uuid NOT NULL,
-	"tx_hash" varchar NOT NULL,
-	"status" varchar NOT NULL,
-	"order_tx_type" varchar NOT NULL,
-	"payload_type" varchar NOT NULL,
-	"gas_used" int NOT NULL,
-	"gas_price" int NOT NULL,
-	"token_transfers" jsonb NULL,
-	PRIMARY KEY (order_id, tx_hash)
+CREATE TABLE IF NOT EXISTS OperationTypes (
+  OperationType_ID INT PRIMARY KEY AUTO_INCREMENT,
+  Description VARCHAR(255) NOT NULL
 );
 
-CREATE UNIQUE INDEX uidx_transaction_data ON transaction_data (order_id);
+CREATE TABLE IF NOT EXISTS Transactions (
+  Transaction_ID INT PRIMARY KEY AUTO_INCREMENT,
+  Account_ID INT NOT NULL,
+  OperationType_ID INT NOT NULL,
+  Amount DECIMAL(10,2) NOT NULL,
+  EventDate DATETIME NOT NULL,
+  FOREIGN KEY (Account_ID) REFERENCES Accounts(Account_ID),
+  FOREIGN KEY (OperationType_ID) REFERENCES OperationTypes(OperationType_ID)
+);
 COMMIT;
